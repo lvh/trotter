@@ -1,6 +1,10 @@
-(ns trotter.core)
+(ns trotter.core
+  (:gen-class)
+  (:require [trotter.web :as web]
+            [clojure.java.browse :refer [browse-url]]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn -main
+  [& args]
+  (println "trotter!!!")
+  (web/run)
+  (browse-url web/url))

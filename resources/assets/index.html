@@ -1,0 +1,105 @@
+<!doctype html>
+<html ng-app="main">
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trotter</title>
+    <link href="/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body ng-controller="ConvergerCtrl">
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Trotter</a>
+        </div>
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+	<div class="col-md-7">
+          <h3>Configuration</h3>
+	  <table class="table table-bordered table-striped">
+            <thead>
+              <th>Group</th>
+              <th>Role</th>
+              <th>Capacity</th>
+              <th>Hosts</th>
+            </thead>
+            <tbody>
+	      <tr ng-repeat="(name, config) in desiredConfiguration">
+	        <td>{{name}}</td>
+	        <td>
+		  <span ng-repeat="role in config.roles" class="">{{role}}&nbsp;</span>
+	        </td>
+	        <td>
+		  <input type="text" ng-model="config.size">
+	        </td>
+	        <td>
+		  <ul>
+		    <li ng-repeat="node in groups[name]">
+                      {{node.hostname}}: {{node['primary-ip']}}
+                    </li>
+		  </ul>
+	        </td>
+	      </tr>
+            </tbody>
+	  </table>
+	  <button class="btn btn-primary btn-block"
+		  ng-click="converge('install')">
+	    <span class="glyphicon glyphicon-refresh"></span>
+            Converge!
+	  </button>
+        </div>
+
+        <div class="col-md-5">
+	  <div ng-show="showConvergeOutput">
+	    <h3>Results</h3>
+
+	    <p class="alert alert-danger" ng-show="!convergeOutput.success">
+              Something went bad :-(
+	    </p>
+
+	    <p class="alert alert-info" ng-show="convergeOutput.success">
+              Everything is awesome!
+	    </p>
+
+	    <div ng-repeat="phase in convergeOutput.phases">
+	      <span class="glyphicon glyphicon-plus" ng-show="!phase.revealDetails"></span>
+	      <span class="glyphicon glyphicon-minus" ng-show="phase.revealDetails"></span>
+
+	      <a ng-click="toggle(phase)">Phase {{phase.phase}} on {{phase.hostname}}</a>
+
+	      <div class="well" ng-show="phase.revealDetails">
+		<div ng-repeat="results in phase.details.results">
+
+		  <span class="glyphicon glyphicon-plus" ng-show="!results.revealDetails"></span>
+		  <span class="glyphicon glyphicon-minus" ng-show="results.revealDetails"></span>
+
+		  <a ng-click="toggle(results)">{{results['action-symbol']}}</a>
+		  <pre ng-show="results.revealDetails">{{results.out}}</pre>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </div>
+
+    <script src="/js/vendor/jquery.js" type="text/javascript"></script>
+    <script src="/js/vendor/underscore.js" type="text/javascript"></script>
+    <script src="/js/vendor/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/js/vendor/angular.min.js" type="text/javascript"></script>
+    <script src="/js/vendor/ui-bootstrap.min.js" type="text/javascript"></script>
+    <script src="/js/converger.js" type="text/javascript"></script>
+  </body>
+</html>
